@@ -26,9 +26,11 @@ export const QueuePage: FC = () => {
 
 	const [values, onChange, resetForm] = useForm({ input: '' })
 	const [arrQueue, setArrQueue] = useState<TArrQueue[]>(arr)
+	const [activeOperation, setActiveOperation] = useState<string>('')
 
 	const enqueue = async (item: string) => {
 		resetForm()
+		setActiveOperation('enqueue')
 		queue.enqueue(item)
 		arrQueue[queue.getTail()] = {
 			item: '',
@@ -41,9 +43,11 @@ export const QueuePage: FC = () => {
 			state: ElementStates.Default,
 		}
 		setArrQueue([...arrQueue])
+		setActiveOperation('')
 	}
 
 	const dequeue = async () => {
+		setActiveOperation('dequeue')
 		arrQueue[queue.getHead()] = {
 			state: ElementStates.Changing,
 		}
@@ -55,6 +59,7 @@ export const QueuePage: FC = () => {
 			state: ElementStates.Default,
 		}
 		setArrQueue([...arrQueue])
+		setActiveOperation('')
 	}
 
 	const handleEnqueue = () => {
@@ -66,8 +71,10 @@ export const QueuePage: FC = () => {
 	}
 
 	const handleClearQueue = () => {
+		setActiveOperation('clear')
 		queue.clear()
 		setArrQueue(arr)
+		setActiveOperation('')
 	}
 
 	return (
@@ -89,17 +96,20 @@ export const QueuePage: FC = () => {
 						text='Добавить'
 						disabled={!values.input}
 						onClick={handleEnqueue}
+						isLoader={activeOperation === 'enqueue'}
 					/>
 					<Button
 						extraClass='mr-20'
 						text='Удалить'
 						disabled={!arrQueue.some(el => el.item !== '')}
 						onClick={handleDequeue}
+						isLoader={activeOperation === 'dequeue'}
 					/>
 					<Button
 						text='Очистить'
 						disabled={!arrQueue.some(el => el.item !== '')}
 						onClick={handleClearQueue}
+						isLoader={activeOperation === 'clear'}
 					/>
 				</div>
 				<div className={styles.circles}>

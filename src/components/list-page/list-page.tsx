@@ -292,9 +292,11 @@ export const ListPage: FC = () => {
 						)
 					)
 				}
+
 				setActiveOperation('')
 			}
 		}
+		resetForm()
 	}
 
 	const handleDelIndex = async () => {
@@ -338,8 +340,9 @@ export const ListPage: FC = () => {
 					)
 				}
 			}
+			setActiveOperation('')
+			resetForm()
 		}
-		setActiveOperation('')
 	}
 
 	return (
@@ -354,6 +357,9 @@ export const ListPage: FC = () => {
 						isLimitText={true}
 						onChange={onChange}
 						value={values.input}
+						disabled={['AddIndex', 'DelIndex', 'AddHead', 'AddTail'].includes(
+							activeOperation
+						)}
 					/>
 					<Button
 						text='Добавить в head'
@@ -381,11 +387,15 @@ export const ListPage: FC = () => {
 					/>
 					<Input
 						name='index'
+						type='number'
 						placeholder='Введите индекс'
 						max={arrList.length - 1}
 						min={0}
 						onChange={onChange}
-						value={Number(values.index)}
+						disabled={['AddIndex', 'DelIndex', 'AddHead', 'AddTail'].includes(
+							activeOperation
+						)}
+						value={values.index}
 					/>
 					<Button
 						text='Добавить по индексу'
@@ -394,6 +404,7 @@ export const ListPage: FC = () => {
 						disabled={
 							activeOperation !== '' ||
 							values.input.trim() === '' ||
+							values.index.trim() === '' ||
 							Number(values.index) === undefined ||
 							Number(values.index) < 0 ||
 							Number(values.index) >= arrList.length
@@ -406,6 +417,7 @@ export const ListPage: FC = () => {
 						linkedList='big'
 						disabled={
 							activeOperation !== '' ||
+							values.index.trim() === '' ||
 							Number(values.index) === undefined ||
 							Number(values.index) < 0 ||
 							Number(values.index) >= arrList.length
