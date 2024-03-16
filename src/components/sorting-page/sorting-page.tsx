@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from "react";
 import styles from "./sorting-page.module.css";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { randomArr } from "./utils";
 import { Button } from "../ui/button/button";
 import { RadioInput } from "../ui/radio-input/radio-input";
 import { Column } from "../ui/column/column";
@@ -24,29 +25,14 @@ export const SortingPage: FC = () => {
     setIsChecked(!isChecked);
   };
 
-  function randomArr() {
-    const minVal = 0;
-    const maxVal = 100;
-    const minLen = 3;
-    const maxLen = 17;
-
-    const arrLen = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
-    const arr = [];
-    for (let i = 0; i < arrLen; i++) {
-      arr.push(Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal);
-    }
-
-    return arr;
-  }
-
-  function getArr() {
+  const getArr = () => {
     setArr(
       randomArr().map((item) => ({
         height: item,
         state: ElementStates.Default,
       }))
     );
-  }
+  };
 
   useEffect(() => {
     getArr();

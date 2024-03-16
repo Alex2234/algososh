@@ -1,112 +1,132 @@
-import { FC, useState, ChangeEvent } from "react";
-import styles from "./stack-page.module.css";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Input } from "../ui/input/input";
-import { Button } from "../ui/button/button";
-import { Circle } from "../ui/circle/circle";
-import { ElementStates } from "../../types/element-states";
-import { SHORT_DELAY_IN_MS } from "../../constants/delays";
-import { delay } from "../../utils/await";
+import { FC, useState } from 'react'
+import styles from './stack-page.module.css'
+import useForm from '../../hooks/useForm'
+import { Stack } from './utils'
+import { SolutionLayout } from '../ui/solution-layout/solution-layout'
+import { Input } from '../ui/input/input'
+import { Button } from '../ui/button/button'
+import { Circle } from '../ui/circle/circle'
+import { ElementStates } from '../../types/element-states'
+import { SHORT_DELAY_IN_MS } from '../../constants/delays'
+import { delay } from '../../utils/await'
 
 type TArrStack = {
-  value: string;
-  state: ElementStates;
-};
+	value: string
+	state: ElementStates
+}
 
 export const StackPage: FC = () => {
-  const [inputValue, setInputValue] = useState<string>("");
-  const [arrStack, setArrStack] = useState<TArrStack[]>([]);
+	const [values, onChange, resetForm] = useForm({ input: '' })
+	const [stack, setStack] = useState(new Stack<TArrStack>())
+	const [activeOperation, setActiveOperation] = useState<string>('')
 
-  const inputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-  };
+	const handlePushStack = async () => {
+		setActiveOperation('addElem')
+		resetForm()
 
-  const handlePushElem = async () => {
-    setInputValue("");
+		const newElement: TArrStack = {
+			value: values.input,
+			state: ElementStates.Changing,
+		}
 
-    const newElement: TArrStack = {
-      value: inputValue,
-      state: ElementStates.Changing,
-    };
+		const updatedStack = new Stack<TArrStack>()
+		stack.getElements().forEach(element => updatedStack.push(element))
+		updatedStack.push(newElement)
 
-    const newArr = [...arrStack];
+		setStack(updatedStack)
 
-    newArr.push(newElement);
-    setArrStack(newArr);
+		await delay(SHORT_DELAY_IN_MS)
 
-    await delay(SHORT_DELAY_IN_MS);
+		setStack(prevStack => {
+			const finalStack = new Stack<TArrStack>()
+			prevStack.getElements().forEach((element, index) => {
+				if (index === prevStack.getSize() - 1) {
+					finalStack.push({ ...element, state: ElementStates.Default })
+				} else {
+					finalStack.push(element)
+				}
+			})
+			return finalStack
+		})
 
-    setArrStack((currentStack) =>
-      currentStack.map((item, index) =>
-        index === currentStack.length - 1
-          ? { ...item, state: ElementStates.Default }
-          : item
-      )
-    );
-  };
+		setActiveOperation('')
+	}
 
-  const handlePopElem = async () => {
-    setArrStack((currentStack) =>
-      currentStack.map((item, index) =>
-        index === currentStack.length - 1
-          ? { ...item, state: ElementStates.Changing }
-          : item
-      )
-    );
-    await delay(SHORT_DELAY_IN_MS);
-    const newArr = [...arrStack];
-    newArr.pop();
-    setArrStack(newArr);
-  };
+	const handlePopStack = async () => {
+		setActiveOperation('delElem')
 
-  const handleClearStack = () => {
-    setArrStack([]);
-  };
+		if (stack.getSize() > 0) {
+			const updatedStack = new Stack<TArrStack>()
+			stack.getElements().forEach((element, index) => {
+				if (index === stack.getSize() - 1) {
+					updatedStack.push({ ...element, state: ElementStates.Changing })
+				} else {
+					updatedStack.push(element)
+				}
+			})
+			setStack(updatedStack)
 
-  return (
-    <SolutionLayout title="Стек">
-      <div className={styles.wrapper}>
-        <div className={styles.controls}>
-          <Input
-            extraClass="mr-6"
-            placeholder="Введите текст"
-            type="text"
-            maxLength={4}
-            isLimitText={true}
-            value={inputValue}
-            onChange={inputChange}
-          />
-          <Button
-            extraClass="mr-6"
-            text="Добавить"
-            disabled={!inputValue}
-            onClick={handlePushElem}
-          />
-          <Button
-            extraClass="mr-20"
-            text="Удалить"
-            disabled={arrStack.length === 0}
-            onClick={handlePopElem}
-          />
-          <Button
-            text="Очистить"
-            disabled={arrStack.length === 0}
-            onClick={handleClearStack}
-          />
-        </div>
-        <div className={styles.circles}>
-          {arrStack.map((item, index) => (
-            <Circle
-              key={index}
-              index={index}
-              letter={item.value}
-              state={item.state}
-              head={index === arrStack.length - 1 ? "top" : ""}
-            />
-          ))}
-        </div>
-      </div>
-    </SolutionLayout>
-  );
-};
+			await delay(SHORT_DELAY_IN_MS)
+			stack.pop()
+			setStack(new Stack<TArrStack>(stack.getElements()))
+		}
+
+		setActiveOperation('')
+	}
+
+	const handleClearStack = () => {
+		setActiveOperation('clear')
+		stack.clear()
+		setStack(new Stack<TArrStack>())
+		setActiveOperation('')
+	}
+
+	return (
+		<SolutionLayout title='Стек'>
+			<div className={styles.wrapper}>
+				<div className={styles.controls}>
+					<Input
+						name='input'
+						extraClass='mr-6'
+						placeholder='Введите текст'
+						type='text'
+						maxLength={4}
+						isLimitText={true}
+						value={values.input}
+						onChange={onChange}
+					/>
+					<Button
+						extraClass='mr-6'
+						text='Добавить'
+						disabled={values.input.trim() === ''}
+						onClick={handlePushStack}
+						isLoader={activeOperation === 'addElem'}
+					/>
+					<Button
+						extraClass='mr-20'
+						text='Удалить'
+						disabled={activeOperation !== '' || stack.getSize() <= 0}
+						onClick={handlePopStack}
+						isLoader={activeOperation === 'delElem'}
+					/>
+					<Button
+						text='Очистить'
+						disabled={activeOperation !== '' || stack.getSize() <= 0}
+						onClick={handleClearStack}
+						isLoader={activeOperation === 'clear'}
+					/>
+				</div>
+				<div className={styles.circles}>
+					{stack.getElements().map((item, index) => (
+						<Circle
+							key={index}
+							letter={item.value}
+							state={item.state}
+							head={index === stack.getSize() - 1 ? 'top' : undefined}
+						/>
+					))}
+				</div>
+			</div>
+		</SolutionLayout>
+	)
+}

@@ -1,6 +1,8 @@
-import { FC, useState, ChangeEvent, useEffect } from "react";
+import { FC, useState } from "react";
+import useForm from "../../hooks/useForm";
 import styles from "./fibonacci-page.module.css";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
+import { getFibonacciNumbers } from "./utils";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
@@ -8,53 +10,25 @@ import { delay } from "../../utils/await";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export const FibonacciPage: FC = () => {
-  const [inputValue, setInputValue] = useState("");
+  const [values, onChange, resetForm] = useForm({ input: "" });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [fibArray, setFibArray] = useState<number[]>([]);
 
-  const inputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    setIsDisabled(!(Number(value) >= 1 && Number(value) <= 19));
-  };
-
-  async function firstIteration() {
-    setFibArray([1]);
-    delay(SHORT_DELAY_IN_MS)
-    setFibArray([1, 1]);
-  }
-
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     setIsLoading(true);
+    const n = parseInt(values.input) + 1;
+
+    const fibNumbers = getFibonacciNumbers(n);
+
     setFibArray([]);
-    let n = parseInt(inputValue);
+    resetForm();
 
-    function Fibonacci(n: number) {
-      if (n === 1) {
-        firstIteration();
-        setIsLoading(false);
-        return;
-      }
-
-      firstIteration();
-      let i = 2;
-      const intervalId = setInterval(() => {
-        setFibArray((prevFibArray) => {
-          const updatedFibArray = [...prevFibArray];
-          if (i > n) {
-            setIsLoading(false);
-            clearInterval(intervalId);
-            return updatedFibArray;
-          }
-          updatedFibArray.push(updatedFibArray[i - 1] + updatedFibArray[i - 2]);
-          return updatedFibArray;
-        });
-        i++;
-      }, SHORT_DELAY_IN_MS);
+    for (let i = 0; i < fibNumbers.length; i++) {
+      await delay(SHORT_DELAY_IN_MS);
+      setFibArray((prevFibArray) => [...prevFibArray, fibNumbers[i]]);
     }
 
-    Fibonacci(n);
+    setIsLoading(false);
   };
 
   return (
@@ -62,18 +36,24 @@ export const FibonacciPage: FC = () => {
       <div className={styles.wrapper}>
         <div className={styles.wrapperInput}>
           <Input
+            name="input"
             placeholder="Введите текст"
             type="number"
             max={19}
+            min={0}
             isLimitText={true}
-            value={inputValue}
-            onChange={inputChange}
+            value={values.input}
+            onChange={onChange}
           />
           <Button
             text="Рассчитать"
             isLoader={isLoading}
             onClick={handleButtonClick}
-            disabled={isDisabled}
+            disabled={
+              values.input.trim() === "" ||
+              parseInt(values.input) < 0 ||
+              parseInt(values.input) > 19
+            }
           />
         </div>
         <div className={styles.circles}>
