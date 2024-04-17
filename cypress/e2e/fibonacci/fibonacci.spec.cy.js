@@ -1,17 +1,17 @@
-import { defaultStyle, circle } from '../constants'
+import { defaultStyle, circle, input, calculateBtn } from '../constants'
 import { SHORT_DELAY_IN_MS } from '../../../src/constants/delays'
 
 describe('Фибоначчи', () => {
 	it('Eсли в инпуте пусто, то кнопка добавления недоступна', () => {
-		cy.visit('http://localhost:3000/fibonacci')
-		cy.get('input').clear()
-		cy.get('[data-id="calculate"]').should('be.disabled')
+		cy.visit('fibonacci')
+		cy.get(input).clear()
+		cy.get(calculateBtn).should('be.disabled')
 	})
 
 	it('Числа генерируются корректно', () => {
-		cy.visit('http://localhost:3000/fibonacci')
-		cy.get('input').type('5').should('have.value', '5')
-		cy.get('[data-id="calculate"]').should('not.be.disabled').click()
+		cy.visit('fibonacci')
+		cy.get(input).type('5').should('have.value', '5')
+		cy.get(calculateBtn).should('not.be.disabled').click()
 
 		cy.get(circle)
 			.eq(0)

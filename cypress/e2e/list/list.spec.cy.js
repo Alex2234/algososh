@@ -4,21 +4,29 @@ import {
 	modifiedStyle,
 	circle,
 	circleContent,
+	input,
+	addHeadBtn,
+	addTailBtn,
+	addIndexBtn,
+	deleteHeadBtn,
+	deleteTailBtn,
+	deleteIndexBtn,
+	inputIndex,
 } from '../constants'
 import { SHORT_DELAY_IN_MS } from '../../../src/constants/delays'
 
 describe('Список', () => {
 	it('Eсли в инпуте пусто, то кнопки добавления и кнопка добавления по индексу недоступны', () => {
-		cy.visit('http://localhost:3000/list')
-		cy.get('[data-id="input"]').clear()
-		cy.get('[data-id="add-head"]').should('be.disabled')
-		cy.get('[data-id="add-tail"]').should('be.disabled')
-		cy.get('[data-id="add-index"]').should('be.disabled')
-		cy.get('[data-id="delete-index"]').should('be.disabled')
+		cy.visit('list')
+		cy.get(input).clear()
+		cy.get(addHeadBtn).should('be.disabled')
+		cy.get(addTailBtn).should('be.disabled')
+		cy.get(addIndexBtn).should('be.disabled')
+		cy.get(deleteIndexBtn).should('be.disabled')
 	})
 
 	it('Дефолтный список отрисовывается коректно', () => {
-		cy.visit('http://localhost:3000/list')
+		cy.visit('list')
 
 		cy.get(circle)
 			.eq(0)
@@ -41,10 +49,10 @@ describe('Список', () => {
 	})
 
 	it('Корректно добавляется элемент в head', () => {
-		cy.visit('http://localhost:3000/list')
+		cy.visit('list')
 
-		cy.get('[data-id="input"]').type('10').should('have.value', '10')
-		cy.get('[data-id="add-head"]').should('not.be.disabled').click()
+		cy.get(input).type('10').should('have.value', '10')
+		cy.get(addHeadBtn).should('not.be.disabled').click()
 		cy.get(circleContent).eq(0).contains('10')
 		cy.wait(SHORT_DELAY_IN_MS)
 		cy.get(circle)
@@ -59,10 +67,10 @@ describe('Список', () => {
 	})
 
 	it('Корректно добавляется элемент в tail', () => {
-		cy.visit('http://localhost:3000/list')
+		cy.visit('list')
 
-		cy.get('[data-id="input"]').type('10').should('have.value', '10')
-		cy.get('[data-id="add-tail"]').should('not.be.disabled').click()
+		cy.get(input).type('10').should('have.value', '10')
+		cy.get(addTailBtn).should('not.be.disabled').click()
 		cy.get(circleContent).eq(3).contains('10')
 		cy.wait(SHORT_DELAY_IN_MS)
 		cy.get(circle)
@@ -77,11 +85,11 @@ describe('Список', () => {
 	})
 
 	it('Корректно добавляется элемент по индексу', () => {
-		cy.visit('http://localhost:3000/list')
+		cy.visit('list')
 
-		cy.get('[data-id="input"]').type('10').should('have.value', '10')
-		cy.get('[data-id="input-index"]').type('2').should('have.value', '2')
-		cy.get('[data-id="add-index"]').should('not.be.disabled').click()
+		cy.get(input).type('10').should('have.value', '10')
+		cy.get(inputIndex).type('2').should('have.value', '2')
+		cy.get(addIndexBtn).should('not.be.disabled').click()
 		cy.get(circleContent).eq(0).contains('10')
 		cy.wait(SHORT_DELAY_IN_MS)
 		cy.get(circleContent).eq(1).contains('10')
@@ -98,9 +106,9 @@ describe('Список', () => {
 	})
 
 	it('Корректно удаляется элемент из head', () => {
-		cy.visit('http://localhost:3000/list')
+		cy.visit('list')
 
-		cy.get('[data-id="delete-head"]').should('not.be.disabled').click()
+		cy.get(deleteHeadBtn).should('not.be.disabled').click()
 
 		cy.get(circleContent).eq(0).contains('0')
 		cy.wait(SHORT_DELAY_IN_MS)
@@ -113,9 +121,9 @@ describe('Список', () => {
 	})
 
 	it('Корректно удаляется элемент из tail', () => {
-		cy.visit('http://localhost:3000/list')
+		cy.visit('list')
 
-		cy.get('[data-id="delete-tail"]').should('not.be.disabled').click()
+		cy.get(deleteTailBtn).should('not.be.disabled').click()
 
 		cy.get(circleContent).eq(3).contains('1')
 		cy.wait(SHORT_DELAY_IN_MS)
@@ -128,10 +136,10 @@ describe('Список', () => {
 	})
 
 	it('Корректно удаляется элемент по индексу', () => {
-		cy.visit('http://localhost:3000/list')
+		cy.visit('list')
 
-		cy.get('[data-id="input-index"]').type('2').should('have.value', '2')
-		cy.get('[data-id="delete-index"]').should('not.be.disabled').click()
+		cy.get(inputIndex).type('2').should('have.value', '2')
+		cy.get(deleteIndexBtn).should('not.be.disabled').click()
 
 		cy.get(circle)
 			.eq(0)

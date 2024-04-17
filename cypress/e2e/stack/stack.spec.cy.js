@@ -1,18 +1,26 @@
-import { defaultStyle, changingStyle, circle } from '../constants'
+import {
+	defaultStyle,
+	changingStyle,
+	circle,
+	input,
+	addBtn,
+	deleteBtn,
+	clearBtn,
+} from '../constants'
 import { SHORT_DELAY_IN_MS } from '../../../src/constants/delays'
 
 describe('Стек', () => {
 	it('Eсли в инпуте пусто, то кнопка добавления недоступна', () => {
-		cy.visit('http://localhost:3000/stack')
+		cy.visit('stack')
 		cy.get('input').clear()
-		cy.get('[data-id="add"]').should('be.disabled')
+		cy.get(addBtn).should('be.disabled')
 	})
 
 	it('Элементы в стек добавляются корректно', () => {
-		cy.visit('http://localhost:3000/stack')
+		cy.visit('stack')
 
-		cy.get('input').type('0').should('have.value', '0')
-		cy.get('[data-id="add"]').should('not.be.disabled').click()
+		cy.get(input).type('0').should('have.value', '0')
+		cy.get(addBtn).should('not.be.disabled').click()
 		cy.get(circle)
 			.eq(0)
 			.should('have.css', 'border', changingStyle)
@@ -23,8 +31,8 @@ describe('Стек', () => {
 			.should('have.css', 'border', defaultStyle)
 			.contains('0')
 
-		cy.get('input').type('1').should('have.value', '1')
-		cy.get('[data-id="add"]').should('not.be.disabled').click()
+		cy.get(input).type('1').should('have.value', '1')
+		cy.get(addBtn).should('not.be.disabled').click()
 		cy.get(circle)
 			.eq(0)
 			.should('have.css', 'border', defaultStyle)
@@ -41,17 +49,17 @@ describe('Стек', () => {
 	})
 
 	it('Элементы из стека удаляются корректно', () => {
-		cy.visit('http://localhost:3000/stack')
+		cy.visit('stack')
 
-		cy.get('input').type('0').should('have.value', '0')
-		cy.get('[data-id="add"]').should('not.be.disabled').click()
+		cy.get(input).type('0').should('have.value', '0')
+		cy.get(addBtn).should('not.be.disabled').click()
 		cy.get(circle)
 			.eq(0)
 			.should('have.css', 'border', defaultStyle)
 			.contains('0')
 
 		cy.get('input').type('1').should('have.value', '1')
-		cy.get('[data-id="add"]').should('not.be.disabled').click()
+		cy.get(addBtn).should('not.be.disabled').click()
 		cy.get(circle)
 			.eq(0)
 			.should('have.css', 'border', defaultStyle)
@@ -61,7 +69,7 @@ describe('Стек', () => {
 			.should('have.css', 'border', defaultStyle)
 			.contains('1')
 
-		cy.get('[data-id="delete"]').should('not.be.disabled').click()
+		cy.get(deleteBtn).should('not.be.disabled').click()
 		cy.get(circle)
 			.eq(0)
 			.should('have.css', 'border', defaultStyle)
@@ -78,17 +86,17 @@ describe('Стек', () => {
 	})
 
 	it('Кнопка Очистить работает корректно', () => {
-		cy.visit('http://localhost:3000/stack')
+		cy.visit('stack')
 
-		cy.get('input').type('0').should('have.value', '0')
-		cy.get('[data-id="add"]').should('not.be.disabled').click()
+		cy.get(input).type('0').should('have.value', '0')
+		cy.get(addBtn).should('not.be.disabled').click()
 		cy.get(circle)
 			.eq(0)
 			.should('have.css', 'border', defaultStyle)
 			.contains('0')
 
-		cy.get('input').type('1').should('have.value', '1')
-		cy.get('[data-id="add"]').should('not.be.disabled').click()
+		cy.get(input).type('1').should('have.value', '1')
+		cy.get(addBtn).should('not.be.disabled').click()
 		cy.get(circle)
 			.eq(0)
 			.should('have.css', 'border', defaultStyle)
@@ -98,7 +106,7 @@ describe('Стек', () => {
 			.should('have.css', 'border', defaultStyle)
 			.contains('1')
 
-		cy.get('[data-id="clear"]').should('not.be.disabled').click()
+		cy.get(clearBtn).should('not.be.disabled').click()
 		cy.get(circle).should('have.length', 0)
 	})
 })

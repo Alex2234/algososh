@@ -3,20 +3,22 @@ import {
 	changingStyle,
 	modifiedStyle,
 	circle,
+	input,
+	reverseBtn,
 } from '../constants'
 import { DELAY_IN_MS } from '../../../src/constants/delays'
 
 describe('Строка', () => {
 	it('Eсли в инпуте пусто, то кнопка добавления недоступна', () => {
-		cy.visit('http://localhost:3000/recursion')
-		cy.get('input').clear()
-		cy.get('[data-id="reverse"]').should('be.disabled')
+		cy.visit('recursion')
+		cy.get(input).clear()
+		cy.get(reverseBtn).should('be.disabled')
 	})
 
 	it('Строка разворачивается корректно', () => {
-		cy.visit('http://localhost:3000/recursion')
-		cy.get('input').type('1234').should('have.value', '1234')
-		cy.get('[data-id="reverse"]').should('not.be.disabled').click()
+		cy.visit('recursion')
+		cy.get(input).type('1234').should('have.value', '1234')
+		cy.get(reverseBtn).should('not.be.disabled').click()
 
 		cy.wait(DELAY_IN_MS)
 

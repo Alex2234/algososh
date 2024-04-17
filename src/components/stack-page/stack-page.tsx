@@ -86,6 +86,7 @@ export const StackPage: FC = () => {
 			<div className={styles.wrapper}>
 				<div className={styles.controls}>
 					<Input
+						data-id='input'
 						name='input'
 						extraClass='mr-6'
 						placeholder='Введите текст'
