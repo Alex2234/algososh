@@ -85,6 +85,7 @@ export const StringComponent: FC = () => {
 						onChange={onChange}
 					/>
 					<Button
+						data-id='reverse'
 						text='Развернуть'
 						onClick={handleButtonClick}
 						isLoader={isLoading}

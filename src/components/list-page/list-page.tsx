@@ -25,26 +25,9 @@ type TArrList = {
 }
 
 export const ListPage: FC = () => {
-	const generationInitialList = () => {
-		const arr = []
-		const lengthList = Math.floor(Math.random() * (6 - 4 + 1)) + 4
-
-		for (let i = 0; i < lengthList; i++) {
-			const lengthStr = Math.floor(Math.random() * 4) + 1
-			let str = ''
-
-			for (let j = 0; j < lengthStr; j++) {
-				const randomSymbol = Math.floor(Math.random() * 10)
-				str += randomSymbol
-			}
-			arr.push(str)
-		}
-		return arr
-	}
-
 	const [values, onChange, resetForm] = useForm({ input: '', index: '' })
 
-	const initialArray = useMemo(() => generationInitialList(), [])
+	const initialArray = useMemo(() => ['0', '34', '8', '1'], [])
 
 	const initialList = useMemo(
 		() =>
@@ -350,6 +333,7 @@ export const ListPage: FC = () => {
 			<div className={styles.wrapper}>
 				<div className={styles.controls}>
 					<Input
+						data-id='input'
 						name='input'
 						placeholder='Введите текст'
 						type='text'
@@ -362,30 +346,35 @@ export const ListPage: FC = () => {
 						)}
 					/>
 					<Button
+						data-id='add-head'
 						text='Добавить в head'
 						onClick={handleAddHead}
 						disabled={activeOperation !== '' || values.input.trim() === ''}
 						isLoader={activeOperation === 'AddHead'}
 					/>
 					<Button
+						data-id='add-tail'
 						text='Добавить в tail'
 						onClick={handleAddTail}
 						disabled={activeOperation !== '' || values.input.trim() === ''}
 						isLoader={activeOperation === 'AddTail'}
 					/>
 					<Button
+						data-id='delete-head'
 						text='Удалить из head'
 						onClick={handleDelHead}
 						disabled={activeOperation !== ''}
 						isLoader={activeOperation === 'DelHead'}
 					/>
 					<Button
+						data-id='delete-tail'
 						text='Удалить из tail'
 						onClick={handleDelTail}
 						disabled={activeOperation !== ''}
 						isLoader={activeOperation === 'DelTail'}
 					/>
 					<Input
+						data-id='input-index'
 						name='index'
 						type='number'
 						placeholder='Введите индекс'
@@ -398,6 +387,7 @@ export const ListPage: FC = () => {
 						value={values.index}
 					/>
 					<Button
+						data-id='add-index'
 						text='Добавить по индексу'
 						linkedList='big'
 						extraClass={styles.button}
@@ -413,6 +403,7 @@ export const ListPage: FC = () => {
 						onClick={handleAddIndex}
 					/>
 					<Button
+						data-id='delete-index'
 						text='Удалить по индексу'
 						linkedList='big'
 						disabled={
