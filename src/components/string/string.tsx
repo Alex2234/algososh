@@ -76,6 +76,7 @@ export const StringComponent: FC = () => {
 			<div className={styles.wrapper}>
 				<div className={styles.wrapperInput}>
 					<Input
+						data-id='input'
 						name='input'
 						placeholder='Введите текст'
 						type='text'
