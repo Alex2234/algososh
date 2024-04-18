@@ -82,6 +82,7 @@ export const QueuePage: FC = () => {
 			<div className={styles.wrapper}>
 				<div className={styles.controls}>
 					<Input
+						data-id='input'
 						name='input'
 						extraClass='mr-6'
 						placeholder='Введите текст'
@@ -92,6 +93,7 @@ export const QueuePage: FC = () => {
 						onChange={onChange}
 					/>
 					<Button
+						data-id='add'
 						extraClass='mr-6'
 						text='Добавить'
 						disabled={!values.input}
@@ -99,6 +101,7 @@ export const QueuePage: FC = () => {
 						isLoader={activeOperation === 'enqueue'}
 					/>
 					<Button
+						data-id='delete'
 						extraClass='mr-20'
 						text='Удалить'
 						disabled={!arrQueue.some(el => el.item !== '')}
@@ -106,6 +109,7 @@ export const QueuePage: FC = () => {
 						isLoader={activeOperation === 'dequeue'}
 					/>
 					<Button
+						data-id='clear'
 						text='Очистить'
 						disabled={!arrQueue.some(el => el.item !== '')}
 						onClick={handleClearQueue}

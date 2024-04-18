@@ -86,6 +86,7 @@ export const StackPage: FC = () => {
 			<div className={styles.wrapper}>
 				<div className={styles.controls}>
 					<Input
+						data-id='input'
 						name='input'
 						extraClass='mr-6'
 						placeholder='Введите текст'
@@ -96,6 +97,7 @@ export const StackPage: FC = () => {
 						onChange={onChange}
 					/>
 					<Button
+						data-id='add'
 						extraClass='mr-6'
 						text='Добавить'
 						disabled={values.input.trim() === ''}
@@ -103,6 +105,7 @@ export const StackPage: FC = () => {
 						isLoader={activeOperation === 'addElem'}
 					/>
 					<Button
+						data-id='delete'
 						extraClass='mr-20'
 						text='Удалить'
 						disabled={activeOperation !== '' || stack.getSize() <= 0}
@@ -110,6 +113,7 @@ export const StackPage: FC = () => {
 						isLoader={activeOperation === 'delElem'}
 					/>
 					<Button
+						data-id='clear'
 						text='Очистить'
 						disabled={activeOperation !== '' || stack.getSize() <= 0}
 						onClick={handleClearStack}
